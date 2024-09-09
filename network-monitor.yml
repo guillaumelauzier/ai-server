@@ -1,0 +1,27 @@
+name: Network IO Monitor
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  network-monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install iftop
+        run: sudo apt-get update && sudo apt-get install -y iftop
+
+      - name: Run network monitor
+        run: |
+          sudo iftop -t -s 10 > network_io_report.txt
+          cat network_io_report.txt
+
+      - name: Upload Network IO Report
+        uses: actions/upload-artifact@v2
+        with:
+          name: network-io-report
+          path: network_io_report.txt
